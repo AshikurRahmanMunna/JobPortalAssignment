@@ -1,4 +1,4 @@
-const { createJob } = require("../controllers/job.controller");
+const { createJob, updateJob } = require("../controllers/job.controller");
 const authorization = require("../middlewares/authorization");
 const getUserInfos = require("../middlewares/getUserInfos");
 const verifyJWT = require("../middlewares/verifyJWT");
@@ -12,4 +12,12 @@ router.post(
   getUserInfos("firstName", "lastName", "-_id"),
   createJob
 );
+
+router.patch(
+  "/:id",
+  verifyJWT,
+  authorization("hiring-manager"),
+  updateJob
+);
+
 module.exports = router;
