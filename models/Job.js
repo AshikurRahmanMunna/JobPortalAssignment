@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const date = new Date();
 const { ObjectId } = mongoose.Types;
 
-// only title and description is required
+// only title, description & location needs from body
 const jobSchema = mongoose.Schema(
   {
     title: {
@@ -19,20 +19,9 @@ const jobSchema = mongoose.Schema(
       minLength: [10, "Description needs to be at least 10 character long"],
     },
     location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number],
-        required: [true, "Location coordinates are required"],
-        validate: {
-          validator: (value) => value.length === 2,
-        },
-        message:
-          "Must be a latitude and a longitude. First one is longitude and second one is latitude",
-      },
+      type: String,
+      required: true,
+      lowercase: true,
     },
     hiringManager: {
       name: {
@@ -58,10 +47,12 @@ const jobSchema = mongoose.Schema(
       minSalary: {
         type: Number,
         min: [0, "Salary can't be negative"],
+        required: true,
       },
       maxSalary: {
         type: Number,
         min: [0, "Salary Can't be negative"],
+        required: true,
       },
       currency: {
         type: String,
@@ -70,6 +61,7 @@ const jobSchema = mongoose.Schema(
           message: "We don't accept {VALUE} currency",
         },
         uppercase: true,
+        default: "BDT",
       },
       timePeriod: {
         type: String,
@@ -78,6 +70,7 @@ const jobSchema = mongoose.Schema(
           message: "{VALUE} is not a valid time period for salary",
         },
         lowercase: true,
+        default: "month",
       },
     },
     age: {
@@ -112,7 +105,8 @@ const jobSchema = mongoose.Schema(
       default: "on-site",
     },
     responsibilities: [String],
-    employmentStatus: {
+    // in bdJobs there is two types in one job like full-time,contract
+    jobTypes: {
       type: [
         {
           type: String,
@@ -134,7 +128,7 @@ const jobSchema = mongoose.Schema(
               "emergency",
               "other",
             ],
-            message: "{VALUE} is not a employment type",
+            message: "{VALUE} is not a valid job type",
           },
         },
       ],
@@ -172,7 +166,7 @@ const jobSchema = mongoose.Schema(
     },
     publishedAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     deadline: {
       type: Date,
@@ -189,8 +183,6 @@ const jobSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
-
-jobSchema.index({ location: "2dsphere" });
 
 const Job = mongoose.model("Job", jobSchema);
 module.exports = Job;

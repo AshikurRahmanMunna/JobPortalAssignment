@@ -2,6 +2,7 @@ const {
   createJob,
   updateJob,
   getJobById,
+  getAllJobs,
 } = require("../controllers/job.controller");
 const authorization = require("../middlewares/authorization");
 const getUserInfos = require("../middlewares/getUserInfos");
@@ -11,7 +12,7 @@ const router = require("express").Router();
 
 router
   .route("/")
-  // .get("/", getAllJobs)
+  .get(getAllJobs)
   .post(
     verifyJWT,
     authorization("hiring-manager"),
