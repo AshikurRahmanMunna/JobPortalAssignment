@@ -1,11 +1,15 @@
 const { createJobService } = require("../services/job.service");
 const generateError = require("../utils/generateError");
+const generateFullName = require("../utils/generateFullName");
 
 exports.createJob = async (req, res) => {
   try {
     const data = {
       ...req.body,
-      hiringManager: { email: req.user.email, id: req.user._id },
+      hiringManager: {
+        name: generateFullName(req.user.firstName, req.user.lastName),
+        id: req.user._id,
+      },
     };
     const job = await createJobService(data);
     res.status(200).json({
