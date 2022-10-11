@@ -5,7 +5,7 @@ exports.createJobService = async (data) => {
   return job;
 };
 
-exports.findJobByIdService = async (id, fields = "", populate = "") => {
+exports.findJobByIdService = async (id, fields = "", populate) => {
   const job = await Job.findById(id).select(fields).populate(populate);
   return job;
 };

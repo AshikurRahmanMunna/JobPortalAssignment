@@ -50,3 +50,22 @@ exports.updateJob = async (req, res) => {
     });
   }
 };
+
+exports.getJobById = async (req, res) => {
+  try {
+    const job = await findJobByIdService(req.params.id, "", {
+      path: "hiringManager.id",
+      select: "-password",
+    });
+    if (!job) {
+      return res.status(400).json({ error: "No job found" });
+    }
+    res.status(200).json({
+      job,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: generateError(error),
+    });
+  }
+};

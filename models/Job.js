@@ -18,7 +18,22 @@ const jobSchema = mongoose.Schema(
       required: [true, "Title is required"],
       minLength: [10, "Description needs to be at least 10 character long"],
     },
-    location: String,
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        required: [true, "Location coordinates are required"],
+        validate: {
+          validator: (value) => value.length === 2,
+        },
+        message:
+          "Must be a latitude and a longitude. First one is longitude and second one is latitude",
+      },
+    },
     hiringManager: {
       name: {
         required: true,
@@ -27,6 +42,7 @@ const jobSchema = mongoose.Schema(
       id: {
         required: true,
         type: ObjectId,
+        ref: "User",
       },
     },
     vacancy: {
@@ -61,7 +77,7 @@ const jobSchema = mongoose.Schema(
           values: ["year", "month", "week", "day", "hour"],
           message: "{VALUE} is not a valid time period for salary",
         },
-        lowercase: true
+        lowercase: true,
       },
     },
     age: {
@@ -82,12 +98,6 @@ const jobSchema = mongoose.Schema(
         },
         maxExperience: {
           type: Number,
-        },
-        experienceUnit: {
-          type: String,
-          enum: ["years", "months", "weeks", "days"],
-          default: "years",
-          lowercase: true
         },
       },
       extraExperience: [String],
@@ -129,7 +139,7 @@ const jobSchema = mongoose.Schema(
         },
       ],
       default: ["full-time"],
-      lowercase: true
+      lowercase: true,
     },
     additionalRequirements: [String],
     benefits: [String],
@@ -179,6 +189,8 @@ const jobSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+jobSchema.index({ location: "2dsphere" });
 
 const Job = mongoose.model("Job", jobSchema);
 module.exports = Job;
