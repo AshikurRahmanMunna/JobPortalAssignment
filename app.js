@@ -7,6 +7,7 @@ require("colors");
 // routes
 const userRoutes = require("./routes/user.routes");
 const jobRoutes = require("./routes/job.routes");
+const managerRoutes = require("./routes/manager.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +30,10 @@ app.get("/", (req, res) => {
 // routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/jobs", jobRoutes);
+app.use("/api/v1/manager", managerRoutes);
+app.use("*", (req, res) => {
+  res.status(404).json({ error: "No Routes Matched" });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`.cyan.bold);
