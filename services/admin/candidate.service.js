@@ -9,7 +9,7 @@ exports.getAllCandidatesService = async ({ fields = "", pagination = {} }) => {
   return candidates;
 };
 
-exports.getCandidateDetailByIdService = async ({ id, fields = "" }) => {
+exports.getCandidateDetailsByIdService = async ({ id, fields = "" }) => {
   const candidate = await User.findOne({ _id: id, role: "candidate" }).select(
     fields
   );

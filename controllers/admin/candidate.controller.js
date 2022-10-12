@@ -1,6 +1,6 @@
 const {
   getAllCandidatesService,
-  getCandidateDetailByIdService,
+  getCandidateDetailsByIdService,
   getCandidateAppliedJobById,
 } = require("../../services/admin/candidate.service");
 const generateError = require("../../utils/generateError");
@@ -23,7 +23,7 @@ exports.getCandidateDetailsById = async (req, res) => {
   try {
     const { id } = req.params;
     const fields = req.query?.fields?.split(",").join(" ") || "";
-    const candidate = await getCandidateDetailByIdService({
+    const candidate = await getCandidateDetailsByIdService({
       id,
       fields,
     });
