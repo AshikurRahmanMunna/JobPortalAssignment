@@ -1,6 +1,6 @@
 const {
   createJobService,
-  findJobByIdService,
+  getJobByIdService,
   updateJobService,
   getAllJobsService,
   applyJobService,
@@ -61,7 +61,7 @@ exports.createJob = async (req, res) => {
 exports.updateJob = async (req, res) => {
   try {
     const { id } = req.params;
-    const job = await findJobByIdService(id);
+    const job = await getJobByIdService(id);
     if (!job) {
       return res.status(400).json({ error: "No Jobs Found to update" });
     }
@@ -84,7 +84,7 @@ exports.updateJob = async (req, res) => {
 
 exports.getJobById = async (req, res) => {
   try {
-    const job = await findJobByIdService(req.params.id, "", {
+    const job = await getJobByIdService(req.params.id, "", {
       path: "hiringManager.id",
       select:
         "-password -createdAt -updatedAt -passwordResetAt -passwordResetToken -passwordResetExpires -__v",
@@ -104,7 +104,7 @@ exports.applyJob = async (req, res) => {
   try {
     const userId = req.user._id;
     const jobId = req.params.id;
-    const job = await findJobByIdService(jobId, "deadline -_id");
+    const job = await getJobByIdService(jobId, "deadline -_id");
     if (!job) {
       return res.status(400).json({ error: "Job Not Found" });
     }

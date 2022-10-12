@@ -32,7 +32,7 @@ exports.createJobService = async (data) => {
   return job;
 };
 
-exports.findJobByIdService = async (id, fields = "", populate) => {
+exports.getJobByIdService = async (id, fields = "", populate) => {
   const job = await Job.findById(id).select(fields).populate(populate);
   return job;
 };
@@ -44,10 +44,11 @@ exports.updateJobService = async (id, data) => {
   return job;
 };
 
-exports.applyJobService = async(payload) => {
+exports.applyJobService = async (payload) => {
   const data = await JobApply.create(payload);
   return data;
-}
-exports.findJobByIdAndCandidateService = async(jobId, candidateId) => {
-  return await JobApply.findOne({job: jobId, "candidate.id": candidateId})
-}
+};
+
+exports.findJobByIdAndCandidateService = async (jobId, candidateId) => {
+  return await JobApply.findOne({ job: jobId, "candidate.id": candidateId });
+};

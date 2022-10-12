@@ -1,4 +1,4 @@
-const { getManagerJobsById } = require("../controllers/manager.controller");
+const { getManagerJobsById, getJobDetailsByIdManager } = require("../controllers/manager.controller");
 const authorization = require("../middlewares/authorization");
 const verifyJWT = require("../middlewares/verifyJWT");
 
@@ -9,6 +9,13 @@ router.get(
   verifyJWT,
   authorization("hiring-manager"),
   getManagerJobsById
+);
+
+router.get(
+  "/jobs/:id",
+  verifyJWT,
+  authorization("hiring-manager"),
+  getJobDetailsByIdManager
 );
 
 module.exports = router;

@@ -1,4 +1,8 @@
-const { getManagerJobsByIdService } = require("../services/manager.service");
+const { getJobByIdService } = require("../services/job.service");
+const {
+  getManagerJobsByIdService,
+  getAppliedCandidatesByJobId,
+} = require("../services/manager.service");
 const generateError = require("../utils/generateError");
 
 exports.getManagerJobsById = async (req, res) => {
@@ -11,11 +15,47 @@ exports.getManagerJobsById = async (req, res) => {
       skip: (Number(req.query.page || 1) - 1) * Number(req.query.limit || 10),
       limit: Number(req.query.limit || 10),
     };
-    const jobs = await getManagerJobsByIdService({ id: _id, fields, pagination });
+    const jobs = await getManagerJobsByIdService({
+      id: _id,
+      fields,
+      pagination,
+    });
     return res.status(200).json({ jobs });
   } catch (error) {
     return res.status(400).json({
       error: generateError(error, "Can't get jobs of this manager"),
+    });
+  }
+};
+
+exports.getJobDetailsByIdManager = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const managerId = req.user._id;
+    const fields = req.query?.fields?.split(",")?.join(" ") || "";
+    const candidatesFields =
+      req.query?.candidatesFields?.split(",")?.join(" ") || "";
+    // to get the full info you need to pass ?getFullInfo=1 in the url
+    const getFullInfo = Number(req.query?.getFullInfo || 0);
+    const jobHiringManager = await getJobByIdService(id, "hiringManager -_id");
+    if (!jobHiringManager.hiringManager.id === managerId) {
+      return res
+        .status(400)
+        .json({ error: "This job is not created by yours" });
+    }
+    const job = await getJobByIdService(id, fields);
+    const appliedCandidates = await getAppliedCandidatesByJobId({
+      id,
+      fields: candidatesFields,
+      getFullCandidateInfo: getFullInfo === 1 ? true : false
+    });
+    return res.status(200).json({
+      job,
+      appliedCandidates,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: generateError(error, "Can't get this job of this manager", true),
     });
   }
 };
