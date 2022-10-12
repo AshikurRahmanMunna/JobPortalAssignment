@@ -5,6 +5,7 @@ const {
   getAllJobsService,
   applyJobService,
   findJobByIdAndCandidateService,
+  getMostAppliedJobsService,
 } = require("../services/job.service");
 const generateError = require("../utils/generateError");
 const generateFullName = require("../utils/generateFullName");
@@ -130,6 +131,17 @@ exports.applyJob = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       error: generateError(error),
+    });
+  }
+};
+
+exports.getMostAppliedJobs = async (req, res) => {
+  try {
+    const jobs = await getMostAppliedJobsService();
+    return res.status(200).json({ jobs });
+  } catch (error) {
+    res.status(400).json({
+      error: generateError(error, "Can't get most applied jobs"),
     });
   }
 };

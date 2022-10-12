@@ -46,9 +46,14 @@ exports.updateJobService = async (id, data) => {
 
 exports.applyJobService = async (payload) => {
   const data = await JobApply.create(payload);
+  await Job.updateOne({ _id: payload.job }, { $inc: { appliedCount: 1 } });
   return data;
 };
 
 exports.findJobByIdAndCandidateService = async (jobId, candidateId) => {
   return await JobApply.findOne({ job: jobId, "candidate.id": candidateId });
+};
+
+exports.getMostAppliedJobsService = async () => {
+  return await Job.find({}).limit(5).sort("-appliedCount");
 };

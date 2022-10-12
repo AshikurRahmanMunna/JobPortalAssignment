@@ -4,6 +4,7 @@ const {
   getJobById,
   getAllJobs,
   applyJob,
+  getMostAppliedJobs,
 } = require("../controllers/job.controller");
 const authorization = require("../middlewares/authorization");
 const getUserInfos = require("../middlewares/getUserInfos");
@@ -20,6 +21,7 @@ router
     getUserInfos("firstName", "lastName", "-_id"),
     createJob
   );
+router.get('/mostApplied', getMostAppliedJobs)
 
 router
   .route("/:id")
