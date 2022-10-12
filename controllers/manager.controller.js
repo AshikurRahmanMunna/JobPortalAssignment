@@ -4,6 +4,7 @@ const {
   getAppliedCandidatesByJobId,
 } = require("../services/manager.service");
 const generateError = require("../utils/generateError");
+const getPagination = require("../utils/getPagination");
 
 exports.getManagerJobsById = async (req, res) => {
   try {
@@ -11,10 +12,7 @@ exports.getManagerJobsById = async (req, res) => {
     const fields =
       req.query?.fields?.split(",")?.join(" ") ||
       "-hiringManager -responsibilities -additionalRequirements -benefits -createdAt -updatedAt";
-    const pagination = {
-      skip: (Number(req.query.page || 1) - 1) * Number(req.query.limit || 10),
-      limit: Number(req.query.limit || 10),
-    };
+    const pagination = getPagination(req.query?.page, req.query?.limit);
     const jobs = await getManagerJobsByIdService({
       id: _id,
       fields,
@@ -47,7 +45,7 @@ exports.getJobDetailsByIdManager = async (req, res) => {
     const appliedCandidates = await getAppliedCandidatesByJobId({
       id,
       fields: candidatesFields,
-      getFullCandidateInfo: getFullInfo === 1 ? true : false
+      getFullCandidateInfo: getFullInfo === 1 ? true : false,
     });
     return res.status(200).json({
       job,

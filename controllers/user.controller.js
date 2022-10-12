@@ -59,7 +59,7 @@ exports.login = async (req, res) => {
       token,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       error: generateError(error),
     });
   }
@@ -79,7 +79,7 @@ exports.getMe = async (req, res) => {
       user,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       error: generateError(error),
     });
   }

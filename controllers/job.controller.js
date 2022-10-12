@@ -8,6 +8,7 @@ const {
 } = require("../services/job.service");
 const generateError = require("../utils/generateError");
 const generateFullName = require("../utils/generateFullName");
+const getPagination = require("../utils/getPagination");
 
 exports.getAllJobs = async (req, res) => {
   try {
@@ -22,10 +23,7 @@ exports.getAllJobs = async (req, res) => {
       jobTypes,
       salaryRange,
     };
-    const pagination = {
-      skip: (Number(req.query.page || 1) - 1) * Number(req.query.limit || 10),
-      limit: Number(req.query.limit || 10),
-    };
+    const pagination = getPagination(req.query?.page, req.query?.limit);
     const fields = req.query?.fields?.split(",").join(" ");
     const sort = req.query?.sort?.split(",").join(" ");
     const jobs = await getAllJobsService({ filters, pagination, sort, fields });
