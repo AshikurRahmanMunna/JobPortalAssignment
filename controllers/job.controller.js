@@ -3,6 +3,8 @@ const {
   findJobByIdService,
   updateJobService,
   getAllJobsService,
+  applyJobService,
+  findJobByIdAndCandidateService,
 } = require("../services/job.service");
 const generateError = require("../utils/generateError");
 const generateFullName = require("../utils/generateFullName");
@@ -91,6 +93,42 @@ exports.getJobById = async (req, res) => {
       return res.status(400).json({ error: "No job found" });
     }
     res.status(200).json(job);
+  } catch (error) {
+    res.status(400).json({
+      error: generateError(error),
+    });
+  }
+};
+
+exports.applyJob = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const jobId = req.params.id;
+    const job = await findJobByIdService(jobId, "deadline -_id");
+    if (!job) {
+      return res.status(400).json({ error: "Job Not Found" });
+    }
+    const expired = new Date() > new Date(job.deadline);
+    if (expired) {
+      return res.status(400).json({ error: "Deadline has passed" });
+    }
+    const applied = await findJobByIdAndCandidateService(jobId, userId);
+    if (applied) {
+      return res
+        .status(400)
+        .json({ error: "You have already applied to this job" });
+    }
+    const name = generateFullName(req.user.firstName, req.user.lastName);
+    const payload = {
+      ...req.body,
+      job: jobId,
+      candidate: {
+        name: name,
+        id: userId,
+      },
+    };
+    await applyJobService(payload);
+    res.status(200).json({ message: "Applied to Job Successfully" });
   } catch (error) {
     res.status(400).json({
       error: generateError(error),

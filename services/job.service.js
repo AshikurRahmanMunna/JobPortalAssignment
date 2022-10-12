@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const JobApply = require("../models/JobApply");
 
 exports.getAllJobsService = async ({
   filters = {},
@@ -42,3 +43,11 @@ exports.updateJobService = async (id, data) => {
   });
   return job;
 };
+
+exports.applyJobService = async(payload) => {
+  const data = await JobApply.create(payload);
+  return data;
+}
+exports.findJobByIdAndCandidateService = async(jobId, candidateId) => {
+  return await JobApply.findOne({job: jobId, "candidate.id": candidateId})
+}
