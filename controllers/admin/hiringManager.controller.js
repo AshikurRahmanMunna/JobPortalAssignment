@@ -35,7 +35,7 @@ exports.updateUserToHiringManager = async (req, res) => {
       return res
       .status(400)
       .json({ error: "Not a candidate!" });
-    }
+    };
     const updated = await updateCandidateToHiringManagerService({ id });
     if (!updated.modifiedCount) {
       return res
