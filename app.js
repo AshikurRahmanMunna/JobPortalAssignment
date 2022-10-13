@@ -30,11 +30,11 @@ app.get("/", (req, res) => {
 });
 
 // routes
-app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/jobs", jobRoutes);
-app.use("/api/v1/manager", managerRoutes);
-app.use("/api/v1/admin/candidate", adminCandidateRoutes);
-app.use("/api/v1/admin/hiringManager", adminHiringManagerRoutes);
+app.use("/user", userRoutes);
+app.use("/jobs", jobRoutes);
+app.use("/manager", managerRoutes);
+app.use("/admin/candidate", adminCandidateRoutes);
+app.use("/admin/hiringManager", adminHiringManagerRoutes);
 
 app.use("*", (req, res) => {
   res.status(404).json({ error: "No Routes Matched" });
