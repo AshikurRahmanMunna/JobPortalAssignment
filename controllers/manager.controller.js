@@ -36,10 +36,10 @@ exports.getJobDetailsByIdManager = async (req, res) => {
     // to get the full info you need to pass ?getFullInfo=1 in the url
     const getFullInfo = Number(req.query?.getFullInfo || 0);
     const jobHiringManager = await getJobByIdService(id, "hiringManager -_id");
-    if (!jobHiringManager.hiringManager.id === managerId) {
+    if (jobHiringManager?.hiringManager?.id.toString() !== managerId) {
       return res
         .status(400)
-        .json({ error: "This job is not created by yours" });
+        .json({ error: "This job is not created by you" });
     }
     const job = await getJobByIdService(id, fields);
     const appliedCandidates = await getAppliedCandidatesByJobId({
